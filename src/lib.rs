@@ -72,11 +72,18 @@ pub const fn checked_abs_ratio_i(x: i128, y: i128) -> Option<u128> {
 	}
 }
 
+fn abs<'a, T>(x: &'a T) -> &'a T
+where
+	&'a T: Ord + Neg<Output = &'a T>,
+{
+	x.max(-x)
+}
+
 pub fn abs_ratio<'a, T>(x: &'a T, y: &'a T) -> T
 where
 	&'a T: Ord + Neg<Output = &'a T> + Div<Output = T>,
 {
-	let (x, y) = (x.max(-x), y.max(-y)); //abs
+	let (x, y) = (abs(x), abs(y));
 	x.max(y) / x.min(y)
 }
 
