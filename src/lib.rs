@@ -83,28 +83,35 @@ pub fn abs_ratio<'a, T>(x: &'a T, y: &'a T) -> T
 where
 	&'a T: Ord + Neg<Output = &'a T> + Div<Output = T>,
 {
-	let (x, y) = (abs(x), abs(y));
+	let [x, y] = [abs(x), abs(y)];
 	x.max(y) / x.min(y)
-}
-
-
-#[cfg(test)]
-#[test]
-fn fabs_test() {
-	use core::cmp::Ordering::Equal;
-
-	assert!(fabs(-0.0).total_cmp(&0.0) == Equal);
-	assert!(fabs(-f64::NAN).total_cmp(&f64::NAN) == Equal);
-	assert!(fabs(f64::NEG_INFINITY).total_cmp(&f64::INFINITY) == Equal);
 }
 
 #[cfg(test)]
 mod tests {
 	#![allow(clippy::float_cmp)]
 	use super::*;
+	use core::f64::*;
+
+	#[test]
+	fn fabs_test() {
+		use core::cmp::Ordering::Equal;
+	
+		assert!(fabs(-0.0).total_cmp(&0.0) == Equal);
+		assert!(fabs(-f64::NAN).total_cmp(&f64::NAN) == Equal);
+		assert!(fabs(f64::NEG_INFINITY).total_cmp(&f64::INFINITY) == Equal);
+	}
 
 	#[test]
 	fn it_works() {
+		assert_eq!(abs_ratio_f(1.0, 2.0), 2.0);
+		assert_eq!(abs_ratio_f(2.0, 1.0), 2.0);
 		assert_eq!(abs_ratio_f(2.0, 2.0), 1.0);
+		assert_eq!(abs_ratio_f(1.0, 0.0), NAN);
+		assert_eq!(abs_ratio_f(0.0, 1.0), NAN);
+		assert_eq!(abs_ratio_i(2, 2), 1);
+		assert_eq!(checked_abs_ratio_i(2, 2), Some(1));
+		assert_eq!(checked_abs_ratio_i(1, 0), None);
+		assert_eq!(checked_abs_ratio_i(0, 1), None);
 	}
 }
