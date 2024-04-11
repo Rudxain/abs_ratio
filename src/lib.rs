@@ -22,7 +22,7 @@ use core::{
 	ops::{Div, Neg},
 };
 
-// `abs` method only exists in `std`
+// https://github.com/rust-lang/rust/issues/50145
 #[must_use]
 #[inline]
 fn fabs(x: f64) -> f64 {
@@ -94,21 +94,33 @@ mod tests {
 	use core::f64::*;
 
 	#[test]
-	fn fabs_test() {
+	fn fabs_works() {
 		use core::cmp::Ordering::Equal;
 	
-		assert!(fabs(-0.0).total_cmp(&0.0) == Equal);
-		assert!(fabs(-f64::NAN).total_cmp(&f64::NAN) == Equal);
-		assert!(fabs(f64::NEG_INFINITY).total_cmp(&f64::INFINITY) == Equal);
+		assert_eq!(fabs(-0.0).total_cmp(&0.0), Equal);
+		assert_eq!(fabs(0.0).total_cmp(&0.0), Equal);
+		assert_eq!(fabs(-NAN).total_cmp(&NAN), Equal);
+		assert_eq!(fabs(NAN).total_cmp(&NAN), Equal);
+
+		assert_eq!(fabs(NEG_INFINITY), INFINITY);
+		assert_eq!(fabs(INFINITY), INFINITY);
+		assert_eq!(fabs(-1.0), 1.0);
+		assert_eq!(fabs(2.8), 2.8);
 	}
 
 	#[test]
-	fn it_works() {
+	fn f_works() {
 		assert_eq!(abs_ratio_f(1.0, 2.0), 2.0);
 		assert_eq!(abs_ratio_f(2.0, 1.0), 2.0);
 		assert_eq!(abs_ratio_f(2.0, 2.0), 1.0);
-		assert_eq!(abs_ratio_f(1.0, 0.0), NAN);
-		assert_eq!(abs_ratio_f(0.0, 1.0), NAN);
+
+		assert_eq!(abs_ratio_f(1.0, 0.0), INFINITY);
+		assert_eq!(abs_ratio_f(0.0, 1.0), INFINITY);
+		assert_eq!(abs_ratio_f(-0.0, 1.0), INFINITY);
+	}
+
+	#[test]
+	fn i_works() {
 		assert_eq!(abs_ratio_i(2, 2), 1);
 		assert_eq!(checked_abs_ratio_i(2, 2), Some(1));
 		assert_eq!(checked_abs_ratio_i(1, 0), None);
