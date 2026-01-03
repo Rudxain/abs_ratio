@@ -1,0 +1,21 @@
+[package]
+name = "abs_ratio"
+version = "0.1.0"
+edition = "2024"
+
+[lints.rust]
+future_incompatible = "deny"
+
+[lints.clippy]
+unwrap_used = "deny"
+shadow_unrelated = "warn"
+decimal_literal_representation = "warn"
+unseparated_literal_suffix = "warn"
+empty_structs_with_brackets = "warn"
+cast_precision_loss = "warn"
+excessive_precision = "warn"
+lossy_float_literal = "warn"
+undocumented_unsafe_blocks = "forbid"
+cargo = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -2 }
